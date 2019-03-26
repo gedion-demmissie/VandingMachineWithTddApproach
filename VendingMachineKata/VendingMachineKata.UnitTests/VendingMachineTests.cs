@@ -140,6 +140,65 @@ namespace VendingMachineKata.UnitTests
             Assert.False(isFirstPennyInserted);
             Assert.False(isSecondPennyInserted);
         }
-#endregion
+        #endregion
+
+        [Fact]
+        public void PirchaseOfCandyWithSufficientFundDisplaysThankYouMessage()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var expectedRecturnedCoins = new List<Coin> { Coin.Penny, Coin.Penny };
+            var expectedMessage = "THANK YOU";
+
+            //Act
+            var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);
+            var isSecondQuarterInserted = vendingMachine.Insert(Coin.Quarter);
+            var isThirdQuarterInserted = vendingMachine.Insert(Coin.Quarter);
+            var purchaseStateContent = vendingMachine.Purchase(new Product{Name="Candy", Price=65});
+
+
+            //Assert
+           Assert.Equal(expectedMessage, purchaseStateContent);
+          
+        }
+
+        [Fact]
+        public void PirchaseOfCandyWithInsufficientFundDisplaysAmountAsMessage()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var expectedRecturnedCoins = new List<Coin> { Coin.Penny, Coin.Penny };
+            var expectedMessage = ((int)Coin.Quarter + (int)Coin.Quarter)/100m;
+
+            //Act
+            var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);
+            var isSecondQuarterInserted = vendingMachine.Insert(Coin.Quarter);
+           
+            var purchaseStateContent = vendingMachine.Purchase(new Product { Name = "Candy", Price = 65 });
+
+
+            //Assert
+            Assert.Equal(expectedMessage.ToString(), purchaseStateContent);
+
+        }
+
+        [Fact]
+        public void PirchaseOfCandyWithZeroAmountDisplaysINSERTCOINMessage()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var expectedRecturnedCoins = new List<Coin> { Coin.Penny, Coin.Penny };
+            var expectedMessage = "INSERT COIN";
+
+            //Act>       
+            var purchaseStateContent = vendingMachine.Purchase(new Product { Name = "Candy", Price = 65 });
+
+
+            //Assert
+            Assert.Equal(expectedMessage, purchaseStateContent);
+
+        }
+
+
     }
 }
