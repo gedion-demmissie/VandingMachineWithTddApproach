@@ -9,6 +9,7 @@ namespace VendingMachineKata.UnitTests
     /// </summary>
     public class VendingMachineTests
     {
+#region Accept Coin Feature Unit Tests
         [Fact]
         public void VendingMachineRejectsPennyCoin()
         {
@@ -139,5 +140,6 @@ namespace VendingMachineKata.UnitTests
             Assert.False(isFirstPennyInserted);
             Assert.False(isSecondPennyInserted);
         }
+#endregion
     }
 }
