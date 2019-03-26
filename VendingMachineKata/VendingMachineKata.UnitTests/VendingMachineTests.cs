@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace VendingMachineKata.UnitTests
@@ -119,6 +120,24 @@ namespace VendingMachineKata.UnitTests
 
             //Assert
             Assert.Equal(expectedAmount.ToString(), actualDisplayedContent);
+        }
+
+        [Fact]
+        public void RejectedCoinsArePlacedInTheCoinReturn()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var expectedRecturnedCoins=new List<Coin>{Coin.Penny,Coin.Penny};
+
+            //Act>
+            var isFirstPennyInserted = vendingMachine.Insert(Coin.Penny);
+            var isSecondPennyInserted = vendingMachine.Insert(Coin.Penny);
+            var returnedCoins = vendingMachine.ReturnedCoins;
+
+            //Assert
+            Assert.Equal(expectedRecturnedCoins, returnedCoins);
+            Assert.False(isFirstPennyInserted);
+            Assert.False(isSecondPennyInserted);
         }
     }
 }
