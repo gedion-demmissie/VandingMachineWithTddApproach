@@ -83,7 +83,7 @@ namespace VendingMachineKata
 
             if(amount > 0)
             {
-              return   Amount.ToString();
+              return   product.Price.ToString();
             }
             return INSERTCOIN;
         }
