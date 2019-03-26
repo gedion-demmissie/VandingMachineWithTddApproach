@@ -154,7 +154,7 @@ namespace VendingMachineKata.UnitTests
             var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);
             var isSecondQuarterInserted = vendingMachine.Insert(Coin.Quarter);
             var isThirdQuarterInserted = vendingMachine.Insert(Coin.Quarter);
-            var purchaseStateContent = vendingMachine.Purchase(new Product{Name="Candy", Price=65});
+            var purchaseStateContent = vendingMachine.Purchase(new Product{Name="Candy", Price= 0.65m});
 
 
             //Assert
@@ -166,10 +166,9 @@ namespace VendingMachineKata.UnitTests
         public void PirchaseOfCandyWithInsufficientFundDisplaysProductPriceAsMessage()
         {
             //Arrange
-            VendingMachine vendingMachine = new VendingMachine();
-            var expectedRecturnedCoins = new List<Coin> { Coin.Penny, Coin.Penny };
-            var productToPurchase = new Product { Name = "Candy", Price = 65 };
-            var expectedMessage = productToPurchase.Price;
+            VendingMachine vendingMachine = new VendingMachine();            
+            var productToPurchase = new Product { Name = "Candy", Price = 0.65m };
+            var expectedMessage = $"PRICE: { productToPurchase.Price.ToString()}";
 
             //Act
             var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);

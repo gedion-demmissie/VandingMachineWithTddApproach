@@ -21,16 +21,16 @@ namespace VendingMachineKata
         /// <summary>
         /// Represents returned coins from the Vending machine.
         /// </summary>
-        private List<Coin> retutnedCoins = new List<Coin>();
+        private List<Coin> returnedCoins = new List<Coin>();
 
         /// <summary>
         /// Represents available Products inside the Vending machine.
         /// </summary>
         private List<Product> products = new List<Product>
         {
-            new Product{Name="Cola", Price=100},
-            new Product{Name="Chips", Price=50},
-            new Product{Name="Candy", Price=65}
+            new Product{Name="Cola", Price=1m},
+            new Product{Name="Chips", Price=0.5m},
+            new Product{Name="Candy", Price=0.65m}
         };
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace VendingMachineKata
         {
             if (coin == Coin.Penny)
             {
-                retutnedCoins.Add(coin);
+                returnedCoins.Add(coin);
                 return false;
             }
             else
@@ -75,20 +75,22 @@ namespace VendingMachineKata
 
         public string Purchase(Product product)
         {
-            if(amount >= product.Price)
+            if(this.Amount >= product.Price)
             {
-                amount -= product.Price;
+                amount -= product.Price * 100m;               
                 return THANKYOU;
             }
 
             if(amount > 0)
             {
-              return   product.Price.ToString();
+              return   $"PRICE: { product.Price.ToString()}" ;
             }
             return INSERTCOIN;
         }
-
+  
+        
         public decimal Amount{get{ return amount / 100m; } }
-        public List<Coin> ReturnedCoins { get {return retutnedCoins; } }
+        public decimal ReturnAmountInCoin { get; set;}
+        public List<Coin> ReturnedCoins { get {return returnedCoins; } }
     }
 }
