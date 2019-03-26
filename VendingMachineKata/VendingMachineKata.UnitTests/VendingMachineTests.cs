@@ -3,6 +3,9 @@ using Xunit;
 
 namespace VendingMachineKata.UnitTests
 {
+    /// <summary>
+    /// Unit tests related to functionalities of Vending Machine
+    /// </summary>
     public class VendingMachineTests
     {
         [Fact]
@@ -58,5 +61,64 @@ namespace VendingMachineKata.UnitTests
             Assert.True(isQuarterInserted);
         }
 
+        [Fact]
+        public void CoinsHaveCorrectDenominations()
+        {
+            //Arrange
+
+
+            //Act
+
+
+            //Assert
+            Assert.Equal(1, (int)Coin.Penny);
+            Assert.Equal(5, (int)Coin.Dime);
+            Assert.Equal(10, (int)Coin.Nickel);
+            Assert.Equal(25, (int)Coin.Quarter);
+        }
+        //When a valid coin is inserted the amount of the coin will be added to the current amount 
+
+        [Fact]
+        public void WhenValidCoinInsertedAmountOfCoinAddedToTheCurrentAmount()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            const decimal expectedAmount = (int)Coin.Quarter / 100m;
+           
+            //Act
+            var isQuarterInserted = vendingMachine.Insert(Coin.Quarter);
+         
+            //Assert
+            Assert.Equal(expectedAmount, vendingMachine.Amount);
+        }
+
+        [Fact]
+        public void WhenNoCoinsInsertedThenMachineDisplaysINSERTCOIN()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            const string expectedDisplayContent = "INSERT COIN";
+
+            //Act
+            var actualDisplayedContent = vendingMachine.Display();
+
+            //Assert
+            Assert.Equal(expectedDisplayContent, actualDisplayedContent);
+        }
+
+        [Fact]
+        public void WhenValidCoinsInsertedThenMachineDisplaysCorrectAmount()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            const decimal expectedAmount=(int) Coin.Quarter/100m;
+
+            //Act
+            var isQuarterInserted = vendingMachine.Insert(Coin.Quarter);
+            var actualDisplayedContent = vendingMachine.Display();
+
+            //Assert
+            Assert.Equal(expectedAmount.ToString(), actualDisplayedContent);
+        }
     }
 }
