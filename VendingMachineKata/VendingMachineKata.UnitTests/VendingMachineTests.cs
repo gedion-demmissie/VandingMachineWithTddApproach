@@ -208,7 +208,7 @@ namespace VendingMachineKata.UnitTests
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();
             Product candy = new Product { Name = "Candy", Price = 0.65m };
-            var expectedReturnAmountInCoinGranularity = 35;
+            var expectedReturnAmount = 0.35m;
             var expectedCoinsToBeReturned =new  List<Coin> { Coin.Quarter,Coin.Nickel};
 
             //Act
@@ -218,11 +218,11 @@ namespace VendingMachineKata.UnitTests
             vendingMachine.Insert(Coin.Quarter);
             vendingMachine.Purchase(candy);
             var returnedCoinsAfterPurchase= vendingMachine.MakeChange();
-            var returnedAmountInCoinGranularity = vendingMachine.ReturnAmountInCoin;
+            var returnedAmount = vendingMachine.ReturnAmount;
 
             //Assert
             Assert.Equal(expectedCoinsToBeReturned , returnedCoinsAfterPurchase);
-            Assert.Equal(expectedReturnAmountInCoinGranularity, returnedAmountInCoinGranularity);
+            Assert.Equal(expectedReturnAmount, returnedAmount);
         }  
         #endregion
     }

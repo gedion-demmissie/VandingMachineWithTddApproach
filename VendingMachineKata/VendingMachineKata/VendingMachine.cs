@@ -18,6 +18,7 @@ namespace VendingMachineKata
         /// </summary>
         private decimal amount = 0m;
 
+        private decimal returnAmount = 0m;
         /// <summary>
         /// Represents returned coins from the Vending machine.
         /// </summary>
@@ -110,13 +111,13 @@ namespace VendingMachineKata
         /// <returns></returns>
         public List<Coin> MakeChange()
         {
-            this.ReturnAmountInCoin = this.amount;
+            this.returnAmount = this.amount;
             this.amount = 0.0M;
            
-            var returnedQuarters = (int)(this.ReturnAmountInCoin / (int)Coin.Quarter);
-            var returnedNickels = (int) (this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter)/(int)Coin.Nickel;
-            var returnedDimes = (int)(this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel) / (int)Coin.Dime;
-            var returnedPennies = (int)(this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel - returnedDimes * (int)Coin.Dime) / (int)Coin.Penny;
+            var returnedQuarters = (int)(this.returnAmount / (int)Coin.Quarter);
+            var returnedNickels = (int) (this.returnAmount - returnedQuarters * (int)Coin.Quarter)/(int)Coin.Nickel;
+            var returnedDimes = (int)(this.returnAmount - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel) / (int)Coin.Dime;
+            var returnedPennies = (int)(this.returnAmount - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel - returnedDimes * (int)Coin.Dime) / (int)Coin.Penny;
             this.returnedCoins = new List<Coin>(returnedQuarters + returnedNickels + returnedDimes + returnedPennies);
             if (returnedQuarters > 0)
             {
@@ -145,7 +146,7 @@ namespace VendingMachineKata
         }
         
         public decimal Amount{get{ return amount / 100m; } }
-        public decimal ReturnAmountInCoin { get; set;}
+        public decimal ReturnAmount { get { return returnAmount / 100m; } }
         public List<Coin> ReturnedCoins { get {return returnedCoins; } }
     }
 }
