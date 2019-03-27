@@ -9,7 +9,7 @@ namespace VendingMachineKata.UnitTests
     /// </summary>
     public class VendingMachineTests
     {
-#region Accept Coin Feature Unit Tests
+        #region Accept Coin Feature Unit Tests
         [Fact]
         public void VendingMachineRejectsPennyCoin()
         {
@@ -142,6 +142,7 @@ namespace VendingMachineKata.UnitTests
         }
         #endregion
 
+        #region Select Product Feature Unit Tests
         [Fact]
         public void PirchaseOfCandyWithSufficientFundDisplaysThankYouMessage()
         {
@@ -198,7 +199,31 @@ namespace VendingMachineKata.UnitTests
             Assert.Equal(expectedMessage, purchaseStateContent);
 
         }
+        #endregion
 
+        #region Make Change Feature Unit Tests
+        [Fact]
+        public void VendingMachineMakesCorrectChange()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            Product candy = new Product { Name = "Candy", Price = 0.65m };
+            var expectedReturnAmountInCoinGranularity = 35;
+            var expectedCoinsToBeReturned =new  List<Coin> { Coin.Quarter,Coin.Nickel};
 
+            //Act
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Purchase(candy);
+            var returnedCoinsAfterPurchase= vendingMachine.MakeChange();
+            var returnedAmountInCoinGranularity = vendingMachine.ReturnAmountInCoin;
+
+            //Assert
+            Assert.Equal(expectedCoinsToBeReturned , returnedCoinsAfterPurchase);
+            Assert.Equal(expectedReturnAmountInCoinGranularity, returnedAmountInCoinGranularity);
+        }  
+        #endregion
     }
 }

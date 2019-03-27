@@ -87,7 +87,62 @@ namespace VendingMachineKata
             }
             return INSERTCOIN;
         }
-  
+        /// <summary>
+        /// Helper to create denomination of coin. 
+        /// </summary>
+        /// <param name="coin"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        private List<Coin> PopulateCoins(Coin coin, int length)
+        {
+            List<Coin> coins = new List<Coin>();
+            for (int i = 0; i < length; i++)
+            {
+
+                coins.Add(coin);
+            }
+            return coins;
+        }
+        
+        /// <summary>
+        /// Compute the denomination of coins to be returned based on the remainin balance amount.
+        /// </summary>
+        /// <returns></returns>
+        public List<Coin> MakeChange()
+        {
+            this.ReturnAmountInCoin = this.amount;
+            this.amount = 0.0M;
+           
+            var returnedQuarters = (int)(this.ReturnAmountInCoin / (int)Coin.Quarter);
+            var returnedNickels = (int) (this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter)/(int)Coin.Nickel;
+            var returnedDimes = (int)(this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel) / (int)Coin.Dime;
+            var returnedPennies = (int)(this.ReturnAmountInCoin - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel - returnedDimes * (int)Coin.Dime) / (int)Coin.Penny;
+            this.returnedCoins = new List<Coin>(returnedQuarters + returnedNickels + returnedDimes + returnedPennies);
+            if (returnedQuarters > 0)
+            {
+                this.returnedCoins.AddRange(PopulateCoins(Coin.Quarter, returnedQuarters));
+            }
+
+            if (returnedNickels > 0)
+            {
+                this.returnedCoins.AddRange(PopulateCoins(Coin.Nickel, returnedNickels));
+
+            }
+
+            if (returnedDimes > 0)
+            {
+                this.returnedCoins.AddRange(PopulateCoins(Coin.Dime, returnedDimes));
+
+            }
+
+            if (returnedPennies > 0)
+            {
+                this.returnedCoins.AddRange(PopulateCoins(Coin.Penny, returnedPennies));
+
+            }
+
+            return this.returnedCoins;
+        }
         
         public decimal Amount{get{ return amount / 100m; } }
         public decimal ReturnAmountInCoin { get; set;}
