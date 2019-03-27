@@ -251,5 +251,28 @@ namespace VendingMachineKata.UnitTests
             Assert.Equal("INSERT COIN", displayedMessage);
         }
         #endregion
+
+        #region Sold Out Feature Unit Tests
+        [Fact]
+        public void VendingMachineShowsSoldOutWhenWewantToPurchaseUnavailableProduct()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var ShelfIdOfUnavailableProducsToPurchase = "4C";
+            var expectedPurchaseMessage = "SOLD OUT";
+          
+            //Act
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            var purchaseMessageStatus = vendingMachine.Purchase(ShelfIdOfUnavailableProducsToPurchase);
+           
+
+            //Assert
+            Assert.Equal(expectedPurchaseMessage, purchaseMessageStatus);
+           
+        }
+        #endregion
     }
 }
