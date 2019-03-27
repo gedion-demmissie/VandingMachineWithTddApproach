@@ -24,11 +24,33 @@ namespace VendingMachineKata
         /// </summary>
         private List<Coin> returnedCoins = new List<Coin>();
 
-        
+      
         /// <summary>
         /// Represents the shelve containing the  Products inside the Vending machine.
         /// </summary>
-        public Shelf Shelf = new Shelf { ShelfEnrties = new Dictionary<string, ShelfEnrty> {
+        private Shelf Shelf { get; set; } 
+
+
+        /// <summary>
+        /// Constant representing No Coin inserted in the vending machine and to display "INSERT COIN" in the screen.
+        /// </summary>
+        private string INSERTCOIN = "INSERT COIN";
+
+        /// <summary>
+        /// Constant representing the Product is out of stock in the vending machine
+        /// </summary>
+        private string SOLDOUT = "SOLD OUT";
+
+        /// <summary>
+        /// Constant representing Thank You upon successful product purchse.
+        /// </summary>
+        private string THANKYOU = "THANK YOU";
+
+        public VendingMachine()
+        {
+            Shelf = new Shelf
+            {
+                ShelfEnrties = new Dictionary<string, ShelfEnrty> {
             {"1C", new ShelfEnrty{
                  Product =new Product { Name = "Cola", Price = 1m },
                  Quntity=100,
@@ -47,25 +69,13 @@ namespace VendingMachineKata
                  UniqueShelfEntryId="3C"
                 }
             }
-        } };
+        }
+            };
 
+        }
 
-        /// <summary>
-        /// Constant representing No Coin inserted in the vending machine and to display "INSERT COIN" in the screen.
-        /// </summary>
-        private string INSERTCOIN = "INSERT COIN";
+        public VendingMachine(Shelf shelf) => this.Shelf = shelf;
 
-        /// <summary>
-        /// Constant representing the Product is out of stock in the vending machine
-        /// </summary>
-        private string SOLDOUT = "SOLD OUT";
-
-        /// <summary>
-        /// Constant representing Thank You upon successful product purchse.
-        /// </summary>
-        private string THANKYOU = "THANK YOU";
-
-       
 
         static void Main(string[] args)
         {
