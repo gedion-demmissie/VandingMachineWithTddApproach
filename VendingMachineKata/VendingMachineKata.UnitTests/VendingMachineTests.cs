@@ -144,7 +144,7 @@ namespace VendingMachineKata.UnitTests
 
         #region Select Product Feature Unit Tests
         [Fact]
-        public void PirchaseOfCandyWithSufficientFundDisplaysThankYouMessage()
+        public void PurchaseOfCandyWithSufficientFundDisplaysThankYouMessage()
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();
@@ -164,7 +164,7 @@ namespace VendingMachineKata.UnitTests
         }
 
         [Fact]
-        public void PirchaseOfCandyWithInsufficientFundDisplaysProductPriceAsMessage()
+        public void PurchaseOfCandyWithInsufficientFundDisplaysProductPriceAsMessage()
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();            
