@@ -223,7 +223,30 @@ namespace VendingMachineKata.UnitTests
             //Assert
             Assert.Equal(expectedCoinsToBeReturned , returnedCoinsAfterPurchase);
             Assert.Equal(expectedReturnAmount, returnedAmount);
-        }  
+        }
+        #endregion
+
+        #region Return Coins Feature Unit Tests
+        [Fact]
+        public void VendingMachineReturnsCoinsCorrectly()
+        {
+            //Arrange
+            VendingMachine vendingMachine = new VendingMachine();
+            var expectedReturnAmount = 1m;
+            var expectedCoinsToBeReturned = new List<Coin> { Coin.Quarter, Coin.Quarter, Coin.Quarter, Coin.Quarter };
+            //Act
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            vendingMachine.Insert(Coin.Quarter);
+            
+            var returnedCoinsAfterPurchase = vendingMachine.ReturnCoins();
+            var returnedAmount = vendingMachine.ReturnAmount;
+
+            //Assert
+            Assert.Equal(expectedCoinsToBeReturned, returnedCoinsAfterPurchase);
+            Assert.Equal(expectedReturnAmount, returnedAmount);
+        }
         #endregion
     }
 }

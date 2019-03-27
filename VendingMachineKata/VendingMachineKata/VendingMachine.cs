@@ -145,6 +145,21 @@ namespace VendingMachineKata
             return this.returnedCoins;
         }
         
+        /// <summary>
+        /// Returns Coins that were not transacted.
+        /// </summary>
+        /// <returns>returns list of Coins.</returns>
+        public List<Coin> ReturnCoins()
+        {       
+            this.returnedCoins = new List<Coin>(this.coins);
+            this.returnAmount = this.amount;
+                        
+            coins.Clear();
+            this.amount = 0m;
+
+            return this.ReturnedCoins;
+        }
+
         public decimal Amount{get{ return amount / 100m; } }
         public decimal ReturnAmount { get { return returnAmount / 100m; } }
         public List<Coin> ReturnedCoins { get {return returnedCoins; } }
