@@ -184,7 +184,7 @@ namespace VendingMachineKata.UnitTests
         }
 
         [Fact]
-        public void PirchaseOfCandyWithZeroAmountDisplaysINSERTCOINMessage()
+        public void PurchaseOfCandyWithZeroAmountDisplaysINSERTCOINMessage()
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();
