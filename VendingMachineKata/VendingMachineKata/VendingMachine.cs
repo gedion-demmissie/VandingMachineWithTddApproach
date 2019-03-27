@@ -24,20 +24,41 @@ namespace VendingMachineKata
         /// </summary>
         private List<Coin> returnedCoins = new List<Coin>();
 
+        
         /// <summary>
-        /// Represents available Products inside the Vending machine.
+        /// Represents the shelve containing the  Products inside the Vending machine.
         /// </summary>
-        private List<Product> products = new List<Product>
-        {
-            new Product{Name="Cola", Price=1m},
-            new Product{Name="Chips", Price=0.5m},
-            new Product{Name="Candy", Price=0.65m}
-        };
+        public Shelf Shelf = new Shelf { ShelfEnrties = new Dictionary<string, ShelfEnrty> {
+            {"1C", new ShelfEnrty{
+                 Product =new Product { Name = "Cola", Price = 1m },
+                 Quntity=100,
+                 UniqueShelfEntryId="1C"
+                }
+            },
+            {"2C", new ShelfEnrty{
+                 Product =new Product { Name="Chips", Price=0.5m },
+                 Quntity=100,
+                 UniqueShelfEntryId="2C"
+                }
+            },
+            {"3C", new ShelfEnrty{
+                 Product =new Product { Name="Candy", Price=0.65m },
+                 Quntity=100,
+                 UniqueShelfEntryId="3C"
+                }
+            }
+        } };
+
 
         /// <summary>
         /// Constant representing No Coin inserted in the vending machine and to display "INSERT COIN" in the screen.
         /// </summary>
         private string INSERTCOIN = "INSERT COIN";
+
+        /// <summary>
+        /// Constant representing the Product is out of stock in the vending machine
+        /// </summary>
+        private string SOLDOUT = "SOLD OUT";
 
         /// <summary>
         /// Constant representing Thank You upon successful product purchse.
@@ -74,19 +95,23 @@ namespace VendingMachineKata
             return INSERTCOIN;
         }
 
-        public string Purchase(Product product)
+        public string Purchase(string uniqueShelfId )
         {
-            if(this.Amount >= product.Price)
+            if (this.Shelf.ShelfEnrties.ContainsKey(uniqueShelfId) && this.Shelf.ShelfEnrties[uniqueShelfId].Quntity > 0)
             {
-                amount -= product.Price * 100m;               
-                return THANKYOU;
-            }
+                if (this.Amount >= this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price)
+                {
+                    amount -= this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price * 100m;
+                    return THANKYOU;
+                }
 
-            if(amount > 0)
-            {
-              return   $"PRICE: { product.Price.ToString()}" ;
+                if (amount > 0)
+                {
+                    return $"PRICE: { this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price.ToString()}";
+                }
+                return INSERTCOIN;
             }
-            return INSERTCOIN;
+            return SOLDOUT;
         }
         /// <summary>
         /// Helper to create denomination of coin. 

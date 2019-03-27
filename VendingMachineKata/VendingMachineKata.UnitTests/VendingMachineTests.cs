@@ -155,7 +155,7 @@ namespace VendingMachineKata.UnitTests
             var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);
             var isSecondQuarterInserted = vendingMachine.Insert(Coin.Quarter);
             var isThirdQuarterInserted = vendingMachine.Insert(Coin.Quarter);
-            var purchaseStateContent = vendingMachine.Purchase(new Product{Name="Candy", Price= 0.65m});
+            var purchaseStateContent = vendingMachine.Purchase("3C");
 
 
             //Assert
@@ -168,14 +168,15 @@ namespace VendingMachineKata.UnitTests
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();            
-            var productToPurchase = new Product { Name = "Candy", Price = 0.65m };
-            var expectedMessage = $"PRICE: { productToPurchase.Price.ToString()}";
+            var ShelfIdOfCandyToPurchase = "3C";
+            var expectedPriceOfCandy = 0.65m;
+            var expectedMessage = $"PRICE: { expectedPriceOfCandy.ToString()}";
 
             //Act
             var isFirstQuartreInserted = vendingMachine.Insert(Coin.Quarter);
             var isSecondQuarterInserted = vendingMachine.Insert(Coin.Quarter);
            
-            var purchaseStateContent = vendingMachine.Purchase(productToPurchase);
+            var purchaseStateContent = vendingMachine.Purchase(ShelfIdOfCandyToPurchase);
 
 
             //Assert
@@ -192,7 +193,7 @@ namespace VendingMachineKata.UnitTests
             var expectedMessage = "INSERT COIN";
 
             //Act>       
-            var purchaseStateContent = vendingMachine.Purchase(new Product { Name = "Candy", Price = 65 });
+            var purchaseStateContent = vendingMachine.Purchase("3C");
 
 
             //Assert
@@ -207,7 +208,7 @@ namespace VendingMachineKata.UnitTests
         {
             //Arrange
             VendingMachine vendingMachine = new VendingMachine();
-            Product candy = new Product { Name = "Candy", Price = 0.65m };
+            var ShelfIdOfCandyToPurchase = "3C";
             var expectedReturnAmount = 0.35m;
             var expectedCoinsToBeReturned =new  List<Coin> { Coin.Quarter,Coin.Nickel};
 
@@ -216,7 +217,7 @@ namespace VendingMachineKata.UnitTests
             vendingMachine.Insert(Coin.Quarter);
             vendingMachine.Insert(Coin.Quarter);
             vendingMachine.Insert(Coin.Quarter);
-            vendingMachine.Purchase(candy);
+            vendingMachine.Purchase(ShelfIdOfCandyToPurchase);
             var returnedCoinsAfterPurchase= vendingMachine.MakeChange();
             var returnedAmount = vendingMachine.ReturnAmount;
 
