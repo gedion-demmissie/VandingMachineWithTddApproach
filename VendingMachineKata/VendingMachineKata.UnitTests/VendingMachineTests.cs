@@ -242,10 +242,12 @@ namespace VendingMachineKata.UnitTests
             
             var returnedCoinsAfterPurchase = vendingMachine.ReturnCoins();
             var returnedAmount = vendingMachine.ReturnAmount;
+            var displayedMessage = vendingMachine.Display();
 
             //Assert
             Assert.Equal(expectedCoinsToBeReturned, returnedCoinsAfterPurchase);
             Assert.Equal(expectedReturnAmount, returnedAmount);
+            Assert.Equal("INSERT COIN", displayedMessage);
         }
         #endregion
     }
