@@ -29,10 +29,6 @@ namespace VendingMachineKata
         private decimal amount = 0m;
 
         private decimal returnAmount = 0m;
-        /// <summary>
-        /// Represents returned coins from the Vending machine.
-        /// </summary>
-        private List<Coin> returnedCoins = new List<Coin>();
 
 
         /// <summary>
@@ -111,7 +107,7 @@ namespace VendingMachineKata
                 coins.Add(coin);
                 return true;
             }
-            returnedCoins.Add(coin);
+            ReturnedCoins.Add(coin);
             return false;         
         }
         public string Display()
@@ -164,7 +160,7 @@ namespace VendingMachineKata
                     _machineState = MachineState.PURCHASED;
                     
                     //Return  remaining coins.
-                    returnedCoins = this.ReturnCoins();
+                    ReturnedCoins = this.ReturnCoins();
                     return true;
                 }
                 else if(this.Amount > 0)                
@@ -221,30 +217,30 @@ namespace VendingMachineKata
             var returnedNickels = (int) (this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter)/(int)CoinDenomination.Nickel;
             var returnedDimes = (int)(this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter - returnedNickels * (int)CoinDenomination.Nickel) / (int)CoinDenomination.Dime;
             var returnedPennies = (int)(this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter - returnedNickels * (int)CoinDenomination.Nickel - returnedDimes * (int)CoinDenomination.Dime) / (int)CoinDenomination.Penny;
-            this.returnedCoins = new List<Coin>(returnedQuarters + returnedNickels + returnedDimes + returnedPennies);
+            this.ReturnedCoins = new List<Coin>(returnedQuarters + returnedNickels + returnedDimes + returnedPennies);
             if (returnedQuarters > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter,CoinWeight.Quarter, returnedQuarters));
+                this.ReturnedCoins.AddRange(PopulateCoins(CoinSize.Quarter,CoinWeight.Quarter, returnedQuarters));
             }
 
             if (returnedNickels > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Nickel, CoinWeight.Nickel, returnedNickels));
+                this.ReturnedCoins.AddRange(PopulateCoins(CoinSize.Nickel, CoinWeight.Nickel, returnedNickels));
 
             }
 
             if (returnedDimes > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedDimes));
+                this.ReturnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedDimes));
 
             }
 
             if (returnedPennies > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedPennies));
+                this.ReturnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedPennies));
             }
 
-            return this.returnedCoins;
+            return this.ReturnedCoins;
         }
         
         /// <summary>
@@ -253,7 +249,7 @@ namespace VendingMachineKata
         /// <returns>returns list of Coins.</returns>
         public List<Coin> ReturnCoins()
         {
-            this.returnedCoins = new List<Coin>(this.coins);
+            this.ReturnedCoins = new List<Coin>(this.coins);
             this.returnAmount = this.amount;
                         
             coins.Clear();
@@ -269,7 +265,7 @@ namespace VendingMachineKata
 
         public decimal Amount{get{ return amount / 100m; } }
         public decimal ReturnAmount { get { return returnAmount / 100m; } }
-        public List<Coin> ReturnedCoins { get {return returnedCoins; } }
+        public List<Coin> ReturnedCoins { get; private set; } = new List<Coin>();
         public MachineState MachineState { get { return _machineState; } }
     }
 
