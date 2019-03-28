@@ -39,26 +39,13 @@ namespace VendingMachineKata
         /// <summary>
         /// Represents machine level state.
         /// </summary>
-        private static MachineState _machineState { get;set;}
-
-        /// <summary>
-        /// Constant representing No Coin inserted in the vending machine and to display "INSERT COIN" in the screen.
-        /// </summary>
-        private string INSERTCOIN = "INSERT COIN";
-
-        /// <summary>
-        /// Constant representing the Product is out of stock in the vending machine
-        /// </summary>
-        private string SOLDOUT = "SOLD OUT";
+        private static MachineState _machineState { get;set;}       
 
         /// <summary>
         /// item price indicate the price of the item to be purchased for  display purpose.
         /// </summary>
         private string _itemPrice;
-        /// <summary>
-        /// Constant representing Thank You upon successful product purchse.
-        /// </summary>
-       // private string THANKYOU = "THANK YOU";
+       
 
         public VendingMachine()
         {
