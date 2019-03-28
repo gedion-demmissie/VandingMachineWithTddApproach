@@ -13,6 +13,16 @@ namespace VendingMachineKata
         /// </summary>
         private List<Coin> coins = new List<Coin>();
 
+
+        /// <summary>
+        /// Valid Coins Dictionary to Identify legal denomination based on CoinSize and CoinWeight
+        /// </summary>
+        Dictionary<Tuple<CoinSize, CoinWeight>, CoinDenomination> LegalCoins = new Dictionary<Tuple<CoinSize, CoinWeight>, CoinDenomination>() {
+            { Tuple.Create(CoinSize.Dime, CoinWeight.Dime),CoinDenomination.Dime },
+            { Tuple.Create(CoinSize.Nickel, CoinWeight.Nickel),CoinDenomination.Nickel },
+            { Tuple.Create(CoinSize.Quarter, CoinWeight.Quarter),CoinDenomination.Quarter }
+        };
+
         /// <summary>
         /// Amount of Coins inserted.
         /// </summary>
@@ -24,12 +34,16 @@ namespace VendingMachineKata
         /// </summary>
         private List<Coin> returnedCoins = new List<Coin>();
 
-      
+
         /// <summary>
         /// Represents the shelve containing the  Products inside the Vending machine.
         /// </summary>
-        private Shelf Shelf { get; set; } 
+        private Shelf Shelf { get; set; }
 
+        /// <summary>
+        /// Represents machine level state.
+        /// </summary>
+        private static MachineState _machineState { get;set;}
 
         /// <summary>
         /// Constant representing No Coin inserted in the vending machine and to display "INSERT COIN" in the screen.
@@ -42,9 +56,13 @@ namespace VendingMachineKata
         private string SOLDOUT = "SOLD OUT";
 
         /// <summary>
+        /// item price indicate the price of the item to be purchased for  display purpose.
+        /// </summary>
+        private string _itemPrice;
+        /// <summary>
         /// Constant representing Thank You upon successful product purchse.
         /// </summary>
-        private string THANKYOU = "THANK YOU";
+       // private string THANKYOU = "THANK YOU";
 
         public VendingMachine()
         {
@@ -71,6 +89,7 @@ namespace VendingMachineKata
             }
         }
             };
+            _machineState = MachineState.INSERTCOIN;
 
         }
 
@@ -84,44 +103,88 @@ namespace VendingMachineKata
 
         public bool Insert(Coin coin)
         {
-            if (coin == Coin.Penny)
+            var coinIdentificationKey = Tuple.Create(coin.Size, coin.Weight);
+            
+            if (LegalCoins.ContainsKey(coinIdentificationKey))
             {
-                returnedCoins.Add(coin);
-                return false;
-            }
-            else
-            {
+                amount +=(int)LegalCoins[coinIdentificationKey];
                 coins.Add(coin);
-                amount += (int)coin;
                 return true;
             }
+            returnedCoins.Add(coin);
+            return false;         
         }
         public string Display()
         {
-            if (amount > 0)
+            if (_machineState == MachineState.INSERTCOIN)
             {
-                return Amount.ToString();
+                if (amount > 0)
+                {
+                    return Amount.ToString();
+                }
+                else
+                {
+                    return MachineState.INSERTCOIN.ToString();
+                }
             }
-            return INSERTCOIN;
+            else if(_machineState == MachineState.PURCHASED)
+            {
+                //Convert the machine state to Insert coin once displaying "THANKYOU".
+                _machineState = MachineState.INSERTCOIN;
+                return MachineState.THANKYOU.ToString();
+            }
+            else if(_machineState == MachineState.SOLDOUT)
+            {
+                //Convert the machine state to Insert coin once displaying "Sold out".
+                _machineState = MachineState.INSERTCOIN;
+                return MachineState.SOLDOUT.ToString();
+            }
+            else if(_machineState == MachineState.INSUFFICIENTFUND)
+            {                 
+                var output=  $"PRICE: { _itemPrice.ToString()}";
+                //Convert the machine state to Insert coin  after "INSUFFICIENTFUND" state.
+                _machineState = MachineState.INSERTCOIN;
+                _itemPrice = string.Empty;
+                return output;
+            }
+
+            //Default message
+            return MachineState.INSERTCOIN.ToString();
+
+           
         }
 
-        public string Purchase(string uniqueShelfId )
+        public bool Purchase(string uniqueShelfId )
         {
             if (this.Shelf.ShelfEnrties.ContainsKey(uniqueShelfId) && this.Shelf.ShelfEnrties[uniqueShelfId].Quntity > 0)
             {
                 if (this.Amount >= this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price)
                 {
                     amount -= this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price * 100m;
-                    return THANKYOU;
+                    _machineState = MachineState.PURCHASED;
+                    
+                    //Return  remaining coins.
+                    returnedCoins = this.ReturnCoins();
+                    return true;
                 }
-
-                if (amount > 0)
+                else if(this.Amount > 0)                
                 {
-                    return $"PRICE: { this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price.ToString()}";
+                    _machineState = MachineState.INSUFFICIENTFUND;
+                    _itemPrice = this.Shelf.ShelfEnrties[uniqueShelfId].Product.Price.ToString();
+                    return false;
                 }
-                return INSERTCOIN;
+                else
+                {
+                    _machineState = MachineState.INSERTCOIN;
+                    return false;
+                }
             }
-            return SOLDOUT;
+            else
+            {
+                _machineState = MachineState.SOLDOUT;
+                 return false;
+            }
+           
         }
         /// <summary>
         /// Helper to create denomination of coin. 
@@ -129,13 +192,13 @@ namespace VendingMachineKata
         /// <param name="coin"></param>
         /// <param name="length"></param>
         /// <returns></returns>
-        private List<Coin> PopulateCoins(Coin coin, int length)
+        private List<Coin> PopulateCoins(CoinSize coinSize, CoinWeight coinWeigh,  int length)
         {
             List<Coin> coins = new List<Coin>();
             for (int i = 0; i < length; i++)
             {
 
-                coins.Add(coin);
+                coins.Add(new Coin(coinSize,coinWeigh));
             }
             return coins;
         }
@@ -144,37 +207,41 @@ namespace VendingMachineKata
         /// Compute the denomination of coins to be returned based on the remainin balance amount.
         /// </summary>
         /// <returns></returns>
-        public List<Coin> MakeChange()
+        public List<Coin> MakeChange(Product selectedProduct)
         {
-            this.returnAmount = this.amount;
-            this.amount = 0.0M;
+            if(selectedProduct.Price >= this.Amount)
+            {
+                //When there is no enough amount, then we won't have a return coins.
+                return new List<Coin>();
+            }
+            this.returnAmount = this.amount - selectedProduct.Price*100;
+            this.amount = selectedProduct.Price * 100;
            
-            var returnedQuarters = (int)(this.returnAmount / (int)Coin.Quarter);
-            var returnedNickels = (int) (this.returnAmount - returnedQuarters * (int)Coin.Quarter)/(int)Coin.Nickel;
-            var returnedDimes = (int)(this.returnAmount - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel) / (int)Coin.Dime;
-            var returnedPennies = (int)(this.returnAmount - returnedQuarters * (int)Coin.Quarter - returnedNickels * (int)Coin.Nickel - returnedDimes * (int)Coin.Dime) / (int)Coin.Penny;
+            var returnedQuarters = (int)(this.returnAmount / (int)CoinDenomination.Quarter);
+            var returnedNickels = (int) (this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter)/(int)CoinDenomination.Nickel;
+            var returnedDimes = (int)(this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter - returnedNickels * (int)CoinDenomination.Nickel) / (int)CoinDenomination.Dime;
+            var returnedPennies = (int)(this.returnAmount - returnedQuarters * (int)CoinDenomination.Quarter - returnedNickels * (int)CoinDenomination.Nickel - returnedDimes * (int)CoinDenomination.Dime) / (int)CoinDenomination.Penny;
             this.returnedCoins = new List<Coin>(returnedQuarters + returnedNickels + returnedDimes + returnedPennies);
             if (returnedQuarters > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(Coin.Quarter, returnedQuarters));
+                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter,CoinWeight.Quarter, returnedQuarters));
             }
 
             if (returnedNickels > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(Coin.Nickel, returnedNickels));
+                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Nickel, CoinWeight.Nickel, returnedNickels));
 
             }
 
             if (returnedDimes > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(Coin.Dime, returnedDimes));
+                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedDimes));
 
             }
 
             if (returnedPennies > 0)
             {
-                this.returnedCoins.AddRange(PopulateCoins(Coin.Penny, returnedPennies));
-
+                this.returnedCoins.AddRange(PopulateCoins(CoinSize.Quarter, CoinWeight.Quarter, returnedPennies));
             }
 
             return this.returnedCoins;
@@ -185,18 +252,33 @@ namespace VendingMachineKata
         /// </summary>
         /// <returns>returns list of Coins.</returns>
         public List<Coin> ReturnCoins()
-        {       
+        {
             this.returnedCoins = new List<Coin>(this.coins);
             this.returnAmount = this.amount;
                         
             coins.Clear();
             this.amount = 0m;
 
+            //Preserve state if it's in a purchased state
+            if (_machineState != MachineState.PURCHASED)
+            {
+                _machineState = MachineState.INSERTCOIN;
+            }
             return this.ReturnedCoins;
-        }
+        }       
 
         public decimal Amount{get{ return amount / 100m; } }
         public decimal ReturnAmount { get { return returnAmount / 100m; } }
         public List<Coin> ReturnedCoins { get {return returnedCoins; } }
+        public MachineState MachineState { get { return _machineState; } }
+    }
+
+    public enum MachineState
+    {
+        INSERTCOIN,
+        INSUFFICIENTFUND,
+        SOLDOUT,
+        THANKYOU,
+        PURCHASED
     }
 }
